@@ -27,7 +27,6 @@ void init_i2c()
 	exit(1);
     }
     else std::cout << "I2C_0 initialized successfully!" << std::endl;
-   
 
    if(!isOpened_I2C_2)
     {
@@ -40,20 +39,25 @@ void init_i2c()
 void I2C_0_callback(const std_msgs::UInt8::ConstPtr& msg){
        //enable analog out 
     uint16_t data_en =((ctrl_byte_en << 8) | msg->data);
-    ROS_INFO_STREAM("Writing to I2C_0: " << data_en);
     bool resultOfWrite = myI2C_0.writeWord(0x0, data_en);
+    if(resultOfWrite)
+             ROS_INFO_STREAM("Write I2C_0 successfully: " << data_en);
+    else     ROS_INFO_STREAM("Write I2C_0 failed: " << data_en);
+
 }
 
 void I2C_2_callback(const std_msgs::UInt8::ConstPtr& msg){
        //enable analog out 
     uint16_t data_en =((ctrl_byte_en << 8) | msg->data);
-    ROS_INFO_STREAM("Writing to I2C_2: " << data_en);
     bool resultOfWrite = myI2C_2.writeWord(0x0, data_en);
+    if(resultOfWrite)
+	     ROS_INFO_STREAM("Write I2C_2 successfully: " << data_en);
+    else     ROS_INFO_STREAM("Write I2C_2 failed: " << data_en);
 }
 
 int main (int argc, char** argv){
     init_i2c();
-    ros::init(argc, argv, "was_motor_node");
+    ros::init(argc, argv, "was_i2c_node");
     ros::NodeHandle nh;
     ros::Subscriber I2C_0_sub = nh.subscribe("LeftWheel_topic", 1000, I2C_0_callback);
     ros::Subscriber I2C_2_sub = nh.subscribe("RightWheel_topic",1000,I2C_2_callback);

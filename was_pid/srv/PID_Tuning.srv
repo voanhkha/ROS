@@ -1,4 +1,0 @@
-string PID_component
-uint32 PID_value
----
-string PID_Ack
