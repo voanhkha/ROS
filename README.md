@@ -1,2 +1,2 @@
 # ROS
-ROS (Robot Operating Systen) on Ubuntu+Beaglebone
+ROS (Robot Operating System) on Ubuntu+Beaglebone
