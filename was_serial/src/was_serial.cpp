@@ -38,7 +38,7 @@ int main (int argc, char** argv){
 
     try
     {
-	UART2.setPort("/dev/ttyS2");
+	UART2.setPort("/dev/ttyS4");
 	UART2.setBaudrate(9600);
 	serial::Timeout to = serial::Timeout::simpleTimeout(1000);
 	UART2.setTimeout(to);
