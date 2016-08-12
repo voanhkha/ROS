@@ -14,7 +14,6 @@
 
 //Define registers for gyro
 #define L3G4200D_WHO_AM_I       0x0F
-
 #define L3G4200D_CTRL_REG1      0x20
 #define L3G4200D_CTRL_REG2      0x21
 #define L3G4200D_CTRL_REG3      0x22
@@ -129,7 +128,7 @@ int main(int argc, char **argv)
 		std::chrono::duration<double> elapsed_seconds = end_time - start_time;
 		start_time = std::chrono::system_clock::now();
 		total_angle = total_angle + z_global*elapsed_seconds.count();
-		std::cout << "Spin: " << std::setw(10)<< total_angle << std::endl;
+		std::cout << "Spin angle: " << std::setw(10)<< total_angle << std::endl;
                 ros::spinOnce();
                 loop_rate.sleep();
         }
