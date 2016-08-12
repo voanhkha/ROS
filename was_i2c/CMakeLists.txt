@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(was_controller)
+project(was_i2c)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -61,19 +61,15 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate actions in the 'action' folder
-add_action_files(
-  DIRECTORY
-  	action
-  FILES
-	motor.action
-  	movement.action
-	lift.action
-)
+#add_action_files(
+ # DIRECTORY
+  #FILES
+#)
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  	actionlib_msgs std_msgs
+   std_msgs
 )
 
 ################################################
@@ -109,7 +105,7 @@ catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES was_controller
  CATKIN_DEPENDS
- 	actionlib_msgs
+ 	#actionlib_msgs
 #  DEPENDS system_lib
 )
 
@@ -137,10 +133,8 @@ include_directories(
 # add_dependencies(was_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(was_controller
-	src/was_controller.cpp
-	src/was_lift.cpp
-	src/was_motor.cpp
+add_executable(i2c_motor
+	src/i2c_motor.cpp
 	)
 
 ## Add cmake target dependencies of the executable
@@ -148,7 +142,7 @@ add_executable(was_controller
 # add_dependencies(was_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(was_controller
+target_link_libraries(i2c_motor
   BlackLib
   ${catkin_LIBRARIES} 
 )

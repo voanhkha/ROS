@@ -4,7 +4,7 @@
 #include "BlackLib/BlackLib.h"
 #include <iostream>
 
-// #define WAS_DEBUG
+#define WAS_DEBUG
 
 #define CYCLINDER_PIN_0  BlackLib::GPIO_60
 #define CYCLINDER_PIN_1  BlackLib::GPIO_115
