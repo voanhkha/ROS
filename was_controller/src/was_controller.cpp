@@ -21,12 +21,10 @@ bool pcf8591_i2c2(void)
 {
 
     BlackLib::BlackI2C  myI2c(BlackLib::I2C_2, 0x48);
-
     bool isOpened = myI2c.open( BlackLib::ReadWrite | BlackLib::NonBlock );
-
     if( !isOpened )
     {
-        std::cout << "I2C2 DEVICE CAN\'T OPEN.;" << std::endl;
+        std::cout << "I2C_2 DEVICE CAN\'T OPEN.;" << std::endl;
         exit(1);
     }
 

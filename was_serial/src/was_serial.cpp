@@ -52,13 +52,13 @@ int main (int argc, char** argv){
     }
 
     if(UART1.isOpen()){
-        ROS_INFO_STREAM("UART1 initialized");
+        ROS_INFO_STREAM("UART1 initialized!");
     }else{
         return -1;
     }
 
     if(UART2.isOpen()){
-	ROS_INFO_STREAM("UART2 initialized");
+	ROS_INFO_STREAM("UART2 initialized!");
     }else{
 	return -1;
     }

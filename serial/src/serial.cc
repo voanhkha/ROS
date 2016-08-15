@@ -57,7 +57,7 @@ public:
     this->pimpl_->writeUnlock();
   }
 private:
-  // Disable copy constructors
+  // Disable Copy constructors
   ScopedWriteLock(const ScopedWriteLock&);
   const ScopedWriteLock& operator=(ScopedWriteLock);
   SerialImpl *pimpl_;

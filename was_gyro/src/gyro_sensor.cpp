@@ -58,11 +58,11 @@ void init_gyro()
     else std::cout << "I2C_1 initialized successfully!" << std::endl;
     // Turns on the L3G4200D's gyro and places it in normal mode.
     // Normal power mode, all axes enabled (for detailed info see datasheet)
-    myI2C.writeByte(L3G4200D_CTRL_REG2, 0x00);            // highpass filter disabled
+    myI2C.writeByte(L3G4200D_CTRL_REG2, 0x00);   // highpass filter disabled
     myI2C.writeByte(L3G4200D_CTRL_REG3, 0x00);
-    myI2C.writeByte(L3G4200D_CTRL_REG4, 0x00);            // sets acuracy to 250 dps (degree per second)
-    myI2C.writeByte(L3G4200D_CTRL_REG5, 0x00);            // deactivates the filters (only use one of these options)
-    myI2C.writeByte(L3G4200D_CTRL_REG1, 0x0F);            // starts Gyro measurement
+    myI2C.writeByte(L3G4200D_CTRL_REG4, 0x00);   // sets acuracy to 250 dps (degree per second)
+    myI2C.writeByte(L3G4200D_CTRL_REG5, 0x00);  // deactivates the filters (only use one of these options)
+    myI2C.writeByte(L3G4200D_CTRL_REG1, 0x0F);  // starts gyro measurement
     
 }
 

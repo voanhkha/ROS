@@ -4,7 +4,7 @@
 #include <sstream>
 #include <bitset>
 
-//Define bits for LED on BFD-1000
+//Define bits for LED on IR sensor
 #define T1      0
 #define T2      1
 #define T3      2

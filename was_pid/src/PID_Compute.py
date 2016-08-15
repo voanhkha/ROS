@@ -62,7 +62,7 @@ def PID_Tuning_callback(msg):
 	elif msg.PID_Type == "en" or msg.PID_Type == "enable":
 		MotorEnable = msg.PID_Coef
 	else:
-		print 'PID_Type error!'		
+		print 'PID_Type error'		
 
 rospy.init_node('IR_subscriber')
 IR_sub = rospy.Subscriber('was_sensor/lineTracking', UInt8, IR_callback)

@@ -11,7 +11,7 @@
 #define KEYCODE_FORWARD         0x77    // W
 #define KEYCODE_BACKWARD        0x73    // S
 
-// For lift
+// For lifting
 #define KEYCODE_UP              0x65    // E
 #define KEYCODE_DOWN            0x63    // C
 

@@ -16,9 +16,7 @@ BlackLib::BlackI2C  myI2C_2(BlackLib::I2C_2, 0x70);
 
 void init_i2c()
 {
-   // BlackLib::BlackI2C  myI2C_0(BlackLib::I2C_0, 0x69);
     bool isOpened_I2C_0 = myI2C_0.open(BlackLib::ReadWrite | BlackLib::NonBlock);
-   // BlackLib::BlackI2C  myI2C_2(BlackLib::I2C_2, 0x70);
     bool isOpened_I2C_2 = myI2C_2.open(BlackLib::ReadWrite | BlackLib::NonBlock);
 
    if(!isOpened_I2C_0)
