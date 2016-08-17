@@ -104,6 +104,19 @@ void I2C2_3_callback(const std_msgs::UInt8::ConstPtr& msg){
 
 }
 
+void Motors_callback(const std_msgs::UInt8::ConstPtr& msg){
+    bool resultOfWrite1 = myI2C2_0.writeByte(ctrl_byte_en, msg->data);
+    if(resultOfWrite1)
+             ROS_INFO_STREAM("Write I2C2_0 successfully: " << msg->data);
+    else     ROS_INFO_STREAM("Write I2C2_0 failed: " << msg->data);
+
+    bool resultOfWrite2 = myI2C2_2.writeByte(ctrl_byte_en, msg->data);
+    if(resultOfWrite2)
+             ROS_INFO_STREAM("Write I2C2_2 successfully: " << msg->data);
+    else     ROS_INFO_STREAM("Write I2C2_2 failed: " << msg->data);
+}
+
+
 int main (int argc, char** argv){
     init_i2c();
     ros::init(argc, argv, "was_i2c_node");
@@ -112,6 +125,9 @@ int main (int argc, char** argv){
     ros::Subscriber I2C2_1_sub = nh.subscribe("I2C2_1_topic", 1000, I2C2_1_callback);
     ros::Subscriber I2C2_2_sub = nh.subscribe("I2C2_2_topic",1000,I2C2_2_callback);
     ros::Subscriber I2C2_3_sub = nh.subscribe("I2C2_3_topic", 1000, I2C2_3_callback);
+    ros::Subscriber Motors_sub = nh.subscribe("Motors_topic", 1000, Motors_callback);
+
+
 
     ros::Rate loop_rate(5);
     while(ros::ok()){

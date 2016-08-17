@@ -3,18 +3,18 @@ import rospy
 from std_msgs.msg import UInt8, UInt32, String
 from was_pid.msg import *
 
-global Kp, Kd, Ki, step1, step2, posi_error, sum_posi_error, last_posi_error, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed, MotorEnable
+global Kp, Kd, Ki, step1, step2, posi_error, sum_posi_error, last_posi_error, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed,PID_Enable
 Kp = 1
 Kd = Ki = 0
 step1 = 10
 step2 = 20
 posi_error = sum_posi_error = last_posi_error = 0
-MaxLeftSpeed = MaxRightSpeed = 255
-BaseLeftSpeed = BaseRightSpeed = 50
-MotorEnable = 0
+MaxLeftSpeed = MaxRightSpeed = 50
+BaseLeftSpeed = BaseRightSpeed = 30
+PID_Enable = 0
 def IR_callback(msg):
-	global MotorEnable, Kp, Kd, Ki, step1, step2, posi_error, last_posi_error, sum_posi_error, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed
-	if MotorEnable == 1:
+	global PID_Enable, Kp, Kd, Ki, step1, step2, posi_error, last_posi_error, sum_posi_error, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed
+	if PID_Enable == 1:
 		IR_values = format(msg.data, "05b") 
 		posi_error = int(IR_values[0])*(-1)*step2 +int(IR_values[1])*(-1)*step1 + int(IR_values[3])*step1 + int(IR_values[4])*step2
 		sum_posi_error = sum_posi_error + posi_error
@@ -40,7 +40,7 @@ def IR_callback(msg):
 	print RightSpeed
 
 def PID_Tuning_callback(msg):
-	global MotorEnable, Kp, Kd, Ki, step1, step2, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed
+	global PID_Enable, Kp, Kd, Ki, step1, step2, MaxLeftSpeed, MaxRightSpeed, BaseLeftSpeed, BaseRightSpeed
 	if msg.PID_Type == "Kp" or msg.PID_Type == "kp":
 		Kp = msg.PID_Coef
         elif msg.PID_Type == "Kd" or msg.PID_Type == "kd":
@@ -60,13 +60,13 @@ def PID_Tuning_callback(msg):
         elif msg.PID_Type == "BRS" or msg.PID_Type == "brs":
                 BaseRightSpeed = msg.PID_Coef
 	elif msg.PID_Type == "en" or msg.PID_Type == "enable":
-		MotorEnable = msg.PID_Coef
+		PID_Enable = msg.PID_Coef
 	else:
 		print 'PID_Type error'		
 
 rospy.init_node('IR_subscriber')
 IR_sub = rospy.Subscriber('was_sensor/lineTracking', UInt8, IR_callback)
 PID_sub = rospy.Subscriber('PID_Tuning_Topic', PID_msg, PID_Tuning_callback)
-LeftWheel_pub = rospy.Publisher('LeftWheel_topic',UInt8)
-RightWheel_pub = rospy.Publisher('RightWheel_topic',UInt8)
+LeftWheel_pub = rospy.Publisher('I2C2_2_topic',UInt8)
+RightWheel_pub = rospy.Publisher('I2C2_0_topic',UInt8)
 rospy.spin()
