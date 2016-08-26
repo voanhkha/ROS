@@ -26,15 +26,20 @@ M: Brake right wheel
 N: Cancel brake on 2 wheels  
 All of the control functions can be found in /was_i2c/src/i2c_motor.cpp. This file receives topic messages directly from was_master/src/teleop.cpp and calls the callbacks for each keypad.  
 
-+ How to tune PID: 
-Ctrl-C (stop) the PID_Compute.py node on Terminal 3 and revise it.   
++ PID algorithm:  
 BaseLeftSpeed, BaseRightSpeed: speed for each wheel when it moves straight on the line.  
 MaxLeftSpeed, MaxRightSpeed: maximum speed for each wheel to avoid high speed if we tune PID too much.  
 posi: the position value of 5 infrared (IR) sensors: more negative if more out on the left and more positive if more out on the right.  
 tuning: the value to be summed/subtracted to left wheel and subtracted/summed to the right wheel if the robot is out on the left/right of the line.  
-Kp: greater Kp -> greater tuning
-Kd: need to be much greater than Kp -> decrease zigzag amplitude.
+Kp: greater Kp -> greater tuning.  
+Kd: need to be much greater than Kp -> decrease zigzag amplitude.  
 Ki: small and may not be used.  
 
-+ To tune PID, revise Kp, Kd, BaseLeftSpeed, BaseRightSpeed, MaxLeftSpeed, MaxRightSpeed and test.
-
++ How to tune PID:  
+Open Terminal 1, press SPACE to stop and disable PID mode.
+Ctrl-C (stop) the PID_Compute.py node on Terminal 3.  
+Open was_pid/src/PID_Compute.py to edit the PID values.  
+Revise Kp, Kd, BaseLeftSpeed, BaseRightSpeed, MaxLeftSpeed, MaxRightSpeed.  
+"rosrun was_pid PID_Compute.py" without catkin_make.  
+Manually move the robot onto the line.  
+Open terminal 1 and press P to enable PID mode and watch the robot moving.  
