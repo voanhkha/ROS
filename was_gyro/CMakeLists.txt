@@ -141,7 +141,6 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(gyro_sensor src/gyro_sensor.cpp)
-add_executable(gyro_reset src/gyro_reset.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -150,10 +149,6 @@ add_executable(gyro_reset src/gyro_reset.cpp)
 ## Specify libraries to link a library or executable target against
 link_directories(/usr/lib)
 target_link_libraries(gyro_sensor
-  BlackLib
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(gyro_reset
   BlackLib
   ${catkin_LIBRARIES}
 )

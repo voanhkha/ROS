@@ -16,7 +16,7 @@ int main(int argc, char **argv)
         ros::init(argc, argv, "was_lineTracker_sensor");
         ros::NodeHandle n;
         ros::Publisher lineTracker_pub = n.advertise<std_msgs::UInt8>("was_sensor/lineTracking", 1000);
-	ros::Rate loop_rate(50);
+	ros::Rate loop_rate(20);
 
         std::bitset<5> trackingValue_bitset;
         BlackLib::BlackGPIO t1Value(BlackLib::GPIO_45, BlackLib::input);

@@ -1,5 +1,8 @@
 #include "ros/ros.h"
 #include <std_msgs/UInt32.h>
+#include <std_msgs/UInt8.h>
+#include <std_msgs/Int16.h>
+#include <std_msgs/String.h>
 #include "BlackLib/BlackLib.h"
 #include <sstream>
 #include <bitset>
@@ -43,19 +46,35 @@
 #define L3G4200D_INT1_THS_ZL    0x37
 #define L3G4200D_INT1_DURATION 0x38
 
-static BlackLib::BlackI2C myI2C(BlackLib::I2C_1, 0x69);
+static BlackLib::BlackI2C myI2C(BlackLib::I2C_2, 0x69);
 static float z_global;
 static float z_offset;
+static int8_t angle, spin_en;
+
+ //       ros::NodeHandle nh;
+   //     ros::Publisher leftmotor_pub, rightmotor_pub;
+
+//	leftmotor_pub = nh.advertise<std_msgs::UInt8>("LW", 1000);
+  //      rightmotor_pub = nh.advertise<std_msgs::UInt8>("RW", 1000);
+	 // ros::init(argc, argv, "was_gyro_sensor");
+//        ros::Rate loop_rate(10);
+  //      ros::NodeHandle nh;
+       // ros::Publisher leftmotor_pub;// = nh.advertise<std_msgs::UInt8>("LW", 1000);
+       // ros::Publisher rightmotor_pub;// = nh.advertise<std_msgs::UInt8>("RW", 1000);
+       // ros::Publisher gyro_pub;// = nh.advertise<std_msgs::UInt32>("was_gyro", 1000);
+       // ros::Rate loop_rate1(0.2);
+
+
 
 void init_gyro()
 {
     bool isOpened = myI2C.open(BlackLib::ReadWrite | BlackLib::NonBlock);
     if(!isOpened)
     {
-        std::cout << "I2C_1 failed" << std::endl;
+        std::cout << "I2C_2 failed" << std::endl;
 	exit(1);
     }
-    else std::cout << "I2C_1 initialized successfully!" << std::endl;
+    else std::cout << "I2C_2 initialized successfully!" << std::endl;
     // Turns on the L3G4200D's gyro and places it in normal mode.
     // Normal power mode, all axes enabled (for detailed info see datasheet)
     myI2C.writeByte(L3G4200D_CTRL_REG2, 0x00);   // highpass filter disabled
@@ -89,48 +108,65 @@ void calib_gyro()
 }
 
 
-void test_i2c_gyro()
-{
-    uint8_t values[6];
-
-    while (true)
-    {
-    	values[0] = myI2C.readByte(L3G4200D_OUT_X_L);
-    	values[1] = myI2C.readByte(L3G4200D_OUT_X_H);
-		int X = static_cast<int16_t>(static_cast<uint16_t>(values[0]) | (static_cast<uint16_t>(values[1]) << 8));
-		values[2] = myI2C.readByte(L3G4200D_OUT_Y_L);
-		values[3] = myI2C.readByte(L3G4200D_OUT_Y_H);
-		int Y = static_cast<int16_t>(static_cast<uint16_t>(values[2]) | (static_cast<uint16_t>(values[3]) << 8));
-		values[4] = myI2C.readByte(L3G4200D_OUT_Z_L);
-		values[5] = myI2C.readByte(L3G4200D_OUT_Z_H);
-		int Z = static_cast<int16_t>(static_cast<uint16_t>(values[4]) | (static_cast<uint16_t>(values[5]) << 8));
-		float Z_float = Z*0.00875;
-    	std::cout << "X value: " << std::setw(10)<< X << " Y value: " << std::setw(10)<< Y << " Z_f value: " << std::setw(10)<< Z_float << std::endl;
-    }
+void Spin_callback(const std_msgs::Int16::ConstPtr& msg){
+       	spin_en = 1;
+	angle = msg->data;
 }
 
 int main(int argc, char **argv)
 {
         ros::init(argc, argv, "was_gyro_sensor");
-        ros::NodeHandle n;
-        ros::Publisher gyro_pub = n.advertise<std_msgs::UInt32>("was_gyro", 1000);
-        ros::Rate loop_rate(10);
-
+        ros::NodeHandle nh;
+	ros::Publisher leftmotor_pub = nh.advertise<std_msgs::UInt8>("LW", 1000);
+        ros::Publisher rightmotor_pub = nh.advertise<std_msgs::UInt8>("RW", 1000);
+	ros::Publisher movement_pub = nh.advertise<std_msgs::String>("was_teleop/movement", 1000);
+	ros::Subscriber spin_sub = nh.subscribe("SpinAngle", 1000, Spin_callback); 
+	ros::Rate loop_rate(10);
+        ros::Rate loop_rate1(0.2);
+	std_msgs::UInt8 SpinSpeed, SpinZero;
+	std_msgs::String topicdata;
+	SpinSpeed.data = 45;
+	SpinZero.data = 0;
 	init_gyro();
-	calib_gyro();
-	float total_angle;
-	std::chrono::time_point<std::chrono::system_clock> start_time, end_time;
-	start_time = std::chrono::system_clock::now();
- 
         while (ros::ok()) {
-                z_global = get_gyro_value() - z_offset;
-		end_time = std::chrono::system_clock::now();
-		std::chrono::duration<double> elapsed_seconds = end_time - start_time;
-		start_time = std::chrono::system_clock::now();
-		total_angle = total_angle + z_global*elapsed_seconds.count();
-		std::cout << "Spin angle: " << std::setw(10)<< total_angle << std::endl;
-                ros::spinOnce();
-                loop_rate.sleep();
+	   if (spin_en == 1){
+		calib_gyro();
+        	float total_angle = 0;
+        	std::chrono::time_point<std::chrono::system_clock> start_time, end_time;
+        	start_time = std::chrono::system_clock::now();
+        	if(angle>0){
+			topicdata.data = "SpinRight";
+                	movement_pub.publish(topicdata);
+			rightmotor_pub.publish(SpinSpeed);
+			leftmotor_pub.publish(SpinSpeed);
+        	}
+        	else{
+			topicdata.data = "SpinLeft";
+			movement_pub.publish(topicdata);
+              	  	leftmotor_pub.publish(SpinSpeed);
+			rightmotor_pub.publish(SpinSpeed);
+        	}
+
+        	while (abs(total_angle)<abs(angle)) {
+                	z_global = get_gyro_value() - z_offset;
+                	end_time = std::chrono::system_clock::now();
+                	std::chrono::duration<double> elapsed_seconds = end_time - start_time;
+                	start_time = std::chrono::system_clock::now();
+                	total_angle = total_angle + z_global*elapsed_seconds.count();
+                	ros::spinOnce();
+                	loop_rate.sleep();
+       	 	}
+		spin_en = 0;
+		topicdata.data = "BrBoth"; // break 2 wheels
+		movement_pub.publish(topicdata); 
+                rightmotor_pub.publish(SpinZero); // send speed 0 to right wheel
+                leftmotor_pub.publish(SpinZero); // send speed 0 to left wheel
+		loop_rate.sleep(); // wait a moment before cancel the breaks
+		topicdata.data = "Br2"; //cancel both breaks
+		movement_pub.publish(topicdata);
+            }		
+	        ros::spinOnce();
+                loop_rate1.sleep();
         }
         return 0;
 }

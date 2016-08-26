@@ -1,18 +1,6 @@
 # was_master
 
 - Platform: x86, x86_64
-- Run:
-	# Please ensure roscore is running before executing following commands
-	$ rosrun was_master was_master &
-	$ rosrun was_master was_teleop
-		# teleop keys:
-			- Move FORWARE 	(unsupported)	: W
-			- Move BACKWARD (unsupported)	: S
-			- Move LEFT	(unsupported)	: A
-			- Move RIGHT	(unsupported)	: D
-			- Lift UP			: E
-			- Lift DOWN			: C
-			- STOP (Both lifting and moving): Space
 - ROS Nodes: (total = 2)
 	+ was_master: receive message from sensors, commands from teleop, 
 		      send control commands to actuators/motors

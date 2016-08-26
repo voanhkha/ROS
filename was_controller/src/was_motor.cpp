@@ -11,46 +11,31 @@
 #define WAS_DEBUG
 #define PUT_TO_MAIN
 
-//I2C2 accessing to PCF8591
 
 #ifndef PUT_TO_MAIN
-uint8_t data = 0;
 
-bool pcf8591_i2c2(void)
-{
-
-    BlackLib::BlackI2C  myI2c(BlackLib::I2C_2, 0x48);
-
-    bool isOpened = myI2c.open( BlackLib::ReadWrite | BlackLib::NonBlock );
-
-    if( !isOpened )
-    {
-        std::cout << "I2C2 DEVICE CAN\'T OPEN.;" << std::endl;
-        exit(1);
-    }
-
-
-    //control byte: 
-    uint8_t ctrl_byte_dis = 0x00; //disable analog out
-    uint8_t ctrl_byte_en = 0x40; //enable analog out
-
-
-    //disable analog out
-    //uint16_t data_dis =((ctrl_byte_dis << 8) | data);
-
-    //enable analog out 
-    uint16_t data_en =((ctrl_byte_en << 8) | data);
-
-    //write to pcf
-    bool resultOfWrite           = myI2c.writeWord(0x0, data_en);
-    return resultOfWrite;
-}
 #endif
 
 was_motor::was_motor(void) {
+        motor_right_sub = nh.subscribe("was_control/motor_right",
+                1, &was_motor::motor_right_cb, this);
+        is_motor_right = false;
+
         motor_left_sub = nh.subscribe("was_control/motor_left",
                 1, &was_motor::motor_left_cb, this);
         is_motor_left = false;
+
+        motor_stop_sub = nh.subscribe("was_control/motor_stop",
+                1, &was_motor::motor_stop_cb, this);
+	is_stop = false;
+
+        motor_right_dir_sub = nh.subscribe("was_control/motor_right_dir",
+                1, &was_motor::motor_right_dir_cb, this);
+        is_motor_right_dir = false;
+
+        motor_left_dir_sub = nh.subscribe("was_control/motor_left_dir",
+                1, &was_motor::motor_left_dir_cb, this);
+        is_motor_left_dir = false;
 
 #ifdef WAS_DEBUG
         std::cout << "Initialized was_motor" << std::endl;
@@ -58,19 +43,81 @@ was_motor::was_motor(void) {
 }
 
 
+void was_motor::motor_right_dir_cb(const std_msgs::String::ConstPtr& cmd) {
+#ifdef WAS_DEBUG
+                std::cout << "motor_right_dir_cb: ";
+#endif
+        if (cmd->data == "RIGHT_FORWARD") {
+                right_dir = RIGHT_FORWARD;
+                is_motor_right_dir = true;
+#ifdef WAS_DEBUG
+                std::cout << "Right Forward" << std::endl;
+#endif
+        }
+        else if (cmd->data == "RIGHT_BACKWARD") {
+                right_dir = RIGHT_BACKWARD;
+                is_motor_right_dir = true;
+#ifdef WAS_DEBUG
+                std::cout << "Right Backward" << std::endl;
+#endif
+        }
+}
+
+void was_motor::motor_left_dir_cb(const std_msgs::String::ConstPtr& cmd) {
+#ifdef WAS_DEBUG
+                std::cout << "motor_left_dir_cb: ";
+#endif
+        if (cmd->data == "LEFT_FORWARD") {
+                left_dir = LEFT_FORWARD;
+                is_motor_left_dir = true;
+#ifdef WAS_DEBUG
+                std::cout << "Left Forward" << std::endl;
+#endif
+        }
+        else if (cmd->data == "LEFT_BACKWARD") {
+                left_dir = LEFT_BACKWARD;
+                is_motor_left_dir = true;
+#ifdef WAS_DEBUG
+                std::cout << "Left Backward" << std::endl;
+#endif
+        }
+}
+
+
+
+void was_motor::motor_right_cb(const std_msgs::String::ConstPtr& cmd) {
+#ifdef WAS_DEBUG
+                std::cout << "motor_right_cb: ";
+#endif
+        if (cmd->data == "RIGHT_DECREASE") {
+                digital_r = RIGHT_DECREASE;
+                is_motor_right = true;
+#ifdef WAS_DEBUG
+                std::cout << "Decrease" << std::endl;
+#endif
+        }
+        else if (cmd->data == "RIGHT_INCREASE") {
+                digital_r = RIGHT_INCREASE;
+                is_motor_right = true;
+#ifdef WAS_DEBUG
+                std::cout << "Increase" << std::endl;
+#endif
+        }
+}
+
 void was_motor::motor_left_cb(const std_msgs::String::ConstPtr& cmd) {
 #ifdef WAS_DEBUG
                 std::cout << "motor_left_cb: ";
 #endif
         if (cmd->data == "LEFT_DECREASE") {
-                digital = LEFT_DECREASE;
+                digital_l = LEFT_DECREASE;
                 is_motor_left = true;
 #ifdef WAS_DEBUG
                 std::cout << "Decrease" << std::endl;
 #endif
         }
         else if (cmd->data == "LEFT_INCREASE") {
-                digital = LEFT_INCREASE;
+                digital_l = LEFT_INCREASE;
                 is_motor_left = true;
 #ifdef WAS_DEBUG
                 std::cout << "Increase" << std::endl;
@@ -78,19 +125,26 @@ void was_motor::motor_left_cb(const std_msgs::String::ConstPtr& cmd) {
         }
 }
 
+void was_motor::motor_stop_cb(const std_msgs::String::ConstPtr& cmd) {
+#ifdef WAS_DEBUG
+                std::cout << "motor_stop_cb: ";
+#endif
+                is_stop = true;
+}
+
 void was_motor::do_motor(void) {
         while (ros::ok()) {
-		if (is_motor_left) {
-			switch(digital) {
-				case LEFT_DECREASE:
-					is_motor_left = true;
+		if (is_motor_right) {
+			switch(digital_r) {
+				case RIGHT_DECREASE:
+					is_motor_right = true;
 					#ifndef PUT_TO_MAIN
 					data--;
 					pcf8591_i2c2();							
 					#endif
 					break;
-				case LEFT_INCREASE:
-					is_motor_left = true;
+				case RIGHT_INCREASE:
+					is_motor_right = true;
 					#ifndef PUT_TO_MAIN
 					data++;	
 					pcf8591_i2c2();
@@ -98,6 +152,25 @@ void was_motor::do_motor(void) {
 					break;
 			}
 		}
+	
+               if (is_motor_left) {
+                        switch(digital_l) {
+                                case LEFT_DECREASE:
+                                        is_motor_left = true;
+                                        #ifndef PUT_TO_MAIN
+                                        data--;
+                                        pcf8591_i2c2();
+                                        #endif
+                                        break;
+                                case LEFT_INCREASE:
+                                        is_motor_left = true;
+                                        #ifndef PUT_TO_MAIN
+                                        data++;
+                                        pcf8591_i2c2();
+                                        #endif
+                                        break;
+                        }
+                }
 	}
 }
 

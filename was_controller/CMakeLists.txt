@@ -148,6 +148,7 @@ add_executable(was_controller
 # add_dependencies(was_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+link_directories(/usr/lib)
 target_link_libraries(was_controller
   BlackLib
   ${catkin_LIBRARIES} 

@@ -2,7 +2,7 @@
 <package>
   <name>was_gyro</name>
   <version>0.0.0</version>
-  <description>The was_sensor package</description>
+  <description>The was_gyro package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
