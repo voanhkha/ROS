@@ -2,9 +2,9 @@
 ROS (Robot Operating System) on Ubuntu+Beaglebone
 
 + Terminal 1: (use keyboard to control the robot)
-roscore &
-rosrun was_i2c i2c_motor &
-rosrun was_master was_teleop
+roscore &;
+rosrun was_i2c i2c_motor &;
+rosrun was_master was_teleop;
 
 + Terminal 2: (for sensors)
 rosrun was_sensor lineTracker_sensor &
