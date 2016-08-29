@@ -15,6 +15,7 @@ rosrun was_pid PID_Compute.py
 
 
 + How to control the robot: (on Terminal 1)   
+
 W: forward mode and spin 2 wheels  
 S: backward mode and spin 2 wheels  
 A: spin left wheel with the previous mode  
@@ -27,6 +28,7 @@ N: Cancel brake on 2 wheels
 All of the control functions can be found in /was_i2c/src/i2c_motor.cpp. This file receives topic messages directly from was_master/src/teleop.cpp and calls the callbacks for each keypad.  
 
 + PID algorithm:  
+
 BaseLeftSpeed, BaseRightSpeed: speed for each wheel when it moves straight on the line.  
 MaxLeftSpeed, MaxRightSpeed: maximum speed for each wheel to avoid high speed if we tune PID too much.  
 posi: the position value of 5 infrared (IR) sensors: more negative if more out on the left and more positive if more out on the right.  
@@ -36,6 +38,7 @@ Kd: need to be much greater than Kp -> decrease zigzag amplitude.
 Ki: small and may not be used.  
 
 + How to tune PID:  
+
 Open Terminal 1, press SPACE to stop and disable PID mode.
 Ctrl-C (stop) the PID_Compute.py node on Terminal 3.  
 Open was_pid/src/PID_Compute.py to edit the PID values.  
@@ -49,7 +52,7 @@ Open terminal 1 and press P to enable PID mode and watch the robot moving.
 Running was_gyro/src/gyro_sensor.cpp. This ROS node waits for a message from topic "SpinAngle". The message is a number indicating the angle for spinning (can be negative).    
 
 Publish the message directly by:  
-rostopic pub SpinAngle std_msgs/Int16 -- <angle>  
+rostopic pub SpinAngle std_msgs/Int16 -- angle
 Example:  
 rostopic pub SpinAngle std_msgs/Int16 -- 90 (spin 90 counter-clockwise)  
 rostopic pub SpinAngle std_msgs/Int16 -- -45 (spin 45 clockwise)  
