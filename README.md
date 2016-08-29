@@ -42,4 +42,16 @@ Open was_pid/src/PID_Compute.py to edit the PID values.
 Revise Kp, Kd, BaseLeftSpeed, BaseRightSpeed, MaxLeftSpeed, MaxRightSpeed.  
 "rosrun was_pid PID_Compute.py" without catkin_make.  
 Manually move the robot onto the line.  
-Open terminal 1 and press P to enable PID mode and watch the robot moving.  
+Open terminal 1 and press P to enable PID mode and watch the robot moving.   
+
++ Spinning for WAS Robot:  
+
+Running was_gyro/src/gyro_sensor.cpp. This ROS node waits for a message from topic "SpinAngle". The message is a number indicating the angle for spinning (can be negative).    
+
+Publish the message directly by:  
+rostopic pub SpinAngle std_msgs/Int16 -- <angle>  
+Example:  
+rostopic pub SpinAngle std_msgs/Int16 -- 90 (spin 90 counter-clockwise)  
+rostopic pub SpinAngle std_msgs/Int16 -- -45 (spin 45 clockwise)  
+
+We can publish the message to the 'SpinAngle' topic from another node as well.  
