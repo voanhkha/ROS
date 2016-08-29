@@ -49,7 +49,8 @@ Open terminal 1 and press P to enable PID mode and watch the robot moving.
 
 + Spinning for WAS Robot:  
 
-Running was_gyro/src/gyro_sensor.cpp. This ROS node waits for a message from topic "SpinAngle". The message is a number indicating the angle for spinning (can be negative).    
+rosrun was_gyro gyro_sensor  
+This ROS node waits for a message from topic "SpinAngle". The message is a number indicating the angle for spinning (can be negative).    
 
 Publish the message directly by:  
 rostopic pub SpinAngle std_msgs/Int16 -- angle
