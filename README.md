@@ -55,7 +55,7 @@ This ROS node waits for a message from topic "SpinAngle". The message is a numbe
 Publish the message directly by:  
 rostopic pub SpinAngle std_msgs/Int16 -- angle
 Example:  
-rostopic pub SpinAngle std_msgs/Int16 -- 90 (spin 90 counter-clockwise)  
-rostopic pub SpinAngle std_msgs/Int16 -- -45 (spin 45 clockwise)  
+rostopic pub --once SpinAngle std_msgs/Int16 -- 90 (spin 90 counter-clockwise)  
+rostopic pub --once SpinAngle std_msgs/Int16 -- -45 (spin 45 clockwise)  
 
 We can publish the message to the 'SpinAngle' topic from another node as well.  
